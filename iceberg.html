@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meme Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+        #memeContainer {
+            position: relative;
+            width: 400px;
+            height: 600px;
+            background-image: url('P:/lshi/meme-2.png'); /* 背景图 */
+            background-size: cover;
+            background-position: center;
+            border: 2px solid black;
+        }
+        #memeImage {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 72%; /* 图片高度固定为容器高度的上三分之二 */
+            object-fit: cover; /* 确保图片不会变形 */
+            z-index: 1;
+        }
+        #memeText {
+            position: absolute;
+            bottom: 60px; /* 向上移动 */
+            left: 0; /* 从左边开始 */
+            width: 70%; /* 容器宽度的三分之二 */
+            font-size: 15px;
+            font-weight: bold; /* 粗体 */
+            color: gainsboro;
+            text-align: center; /* 居中对齐 */
+            text-shadow: 2px 2px 5px black;
+            z-index: 2;
+        }
+    </style>
+</head>
+<body>
+
+    <div>
+        <h1>Meme Generator</h1>
+        <input type="file" id="imageUpload" accept="image/*"><br><br>
+        <input type="text" id="memeInput" placeholder="输入你的文字"><br><br>
+        <button onclick="generateMeme()">生成Meme</button><br><br>
+        <button onclick="saveMeme()">保存Meme图片</button>
+        <canvas id="memeCanvas" style="display:none;"></canvas>
+
+        <div id="memeContainer">
+            <img id="memeImage" src="" alt="" style="display:none;">
+            <div id="memeText">(用户输入的文字)</div>
+        </div>
+    </div>
+
+    <script>
+        function generateMeme() {
+            const inputText = document.getElementById('memeInput').value;
+            const memeText = document.getElementById('memeText');
+            memeText.innerText = inputText;
+
+            const imageInput = document.getElementById('imageUpload');
+            const memeImage = document.getElementById('memeImage');
+
+            if (imageInput.files && imageInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    memeImage.src = e.target.result;
+                    memeImage.style.display = 'block';
+                };
+                reader.readAsDataURL(imageInput.files[0]);
+            }
+        }
+        function saveMeme() {
+    const memeContainer = document.getElementById('memeContainer');
+    const canvas = document.getElementById('memeCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // 设置 canvas 的尺寸为 memeContainer 的尺寸
+    canvas.width = memeContainer.offsetWidth;
+    canvas.height = memeContainer.offsetHeight;
+
+    // 绘制背景图
+    const background = new Image();
+    background.src = window.getComputedStyle(memeContainer).backgroundImage.slice(5, -2); // 获取背景图的URL
+
+    background.onload = function() {
+        // 在 Canvas 上绘制背景
+        ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
+
+        // 绘制用户上传的图片
+        const memeImage = document.getElementById('memeImage');
+        if (memeImage.style.display !== 'none') {
+            ctx.drawImage(memeImage, 0, 0, memeImage.width, memeImage.height);
+        }
+
+        // 绘制文字
+        const memeText = document.getElementById('memeText');
+        ctx.font = 'bold 15px Arial';
+        ctx.fillStyle = 'gainsboro';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'bottom';
+        ctx.shadowColor = 'black';
+        ctx.shadowBlur = 5;
+        ctx.fillText(memeText.innerText, canvas.width * 0.35, canvas.height - 60); // 调整文字位置
+
+        // 将 Canvas 转换为图片并下载
+        const link = document.createElement('a');
+        link.href = canvas.toDataURL(); // 获取图片数据
+        link.download = 'meme.png'; // 下载文件名
+        link.click(); // 触发下载
+    };
+}
+
+    </script>
+
+</body>
+</html>
