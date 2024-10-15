@@ -112,6 +112,14 @@
         ctx.shadowBlur = 5;
         ctx.fillText(memeText.innerText, canvas.width * 0.35, canvas.height - 60); // 调整文字位置
 
+        const copyrightText = "suiren.moe制作 bilibili@焦禾的渴求";
+        ctx.font = '8px Arial';
+        ctx.fillStyle = 'grey'; // 版权信息颜色
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'bottom';
+        ctx.shadowBlur = 0; // 去掉阴影
+        ctx.fillText(copyrightText, canvas.width / 2, canvas.height - 10); // 将版权信息放在底部
+
         // 将 Canvas 转换为图片并下载
         const link = document.createElement('a');
         link.href = canvas.toDataURL(); // 获取图片数据
